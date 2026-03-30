@@ -10,6 +10,8 @@ on:
   push:
     branches:
       - welcome-workflow
+    paths:
+      - .github/workflows/welcome.yml
 
 # Reference: https://docs.github.com/en/actions/security-guides/automatic-token-authentication
 permissions:
@@ -17,11 +19,16 @@ permissions:
   # Need `contents: write` to update the step metadata.
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Get the current step to only run the main job when the learner is on the same step.
   get_current_step:
     name: Check current step number
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,13 +53,14 @@ jobs:
 
     # We'll run Ubuntu for performance instead of Mac or Windows.
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       # We'll need to check out the repository so that we can edit the README.
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Let's get all the branches.
+          fetch-depth: 1 # Shallow clone is sufficient.
 
       # Verify the learner added the file contents.
       - name: Check workflow contents, name
