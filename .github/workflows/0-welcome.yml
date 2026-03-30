@@ -58,7 +58,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1 # Shallow clone is sufficient.
+          fetch-depth: 0 # Full history required to reliably create and push branches.
 
       # Make a branch, file, and commit for the learner.
       - name: Prepare a branch, and file
